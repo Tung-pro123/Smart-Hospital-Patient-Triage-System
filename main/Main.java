@@ -1,5 +1,6 @@
 package main;
 
+import model.Patient;
 import model.Vitals;
 import service.MedicalRecordService;
 import service.PatientService;
@@ -90,28 +91,34 @@ public class Main {
 
     /**
      * HÀM TEST 2: Kiểm tra Danh sách liên kết đôi (Doubly Linked List) cho Hồ sơ
-     * bệnh án
+     * bệnh án của từng bệnh nhân
      */
     public static void testMedicalHistoryNavigation() {
-        System.out.println("--- TEST MODULE 3: LICH SU KHÁM BỆNH (DOUBLY LINKED LIST) ---");
+        System.out.println("--- TEST MODULE 3: LICH SU KHÁM BỆNH CỦA BỆNH NHÂN (DOUBLY LINKED LIST) ---");
         MedicalRecordService recordService = new MedicalRecordService();
 
-        System.out.println("\n[1] BAC SI NHAP HO SO KHAM BENH...");
-        // Bac si nhap 3 lan kham benh (Tu cu den moi) cho benh nhan BN06
-        recordService.addNewRecord("HS01", "BN06", "Kham lan 1: Dau dau nhe", "Paracetamol");
-        recordService.addNewRecord("HS02", "BN06", "Kham lan 2: Sot cao", "Ibuprofen, Oresol");
-        recordService.addNewRecord("HS03", "BN06", "Kham lan 3: Viem hong nang", "Khang sinh Amoxicillin");
+        // 1. Tạo đối tượng bệnh nhân trước
+        // (Giả sử Constructor có đủ các tham số như file Patient.java của bạn)
+        Patient patientBN06 = new Patient("BN06", "Lê Thanh Tùng", 22, "Male",
+                "0909xxxxxx", "BHYT-001", 1, new Vitals(36.5, 120, 98, 2));
+
+        System.out.println("\n[1] BAC SI NHAP HO SO KHAM BENH CHO: " + patientBN06.fullName);
+
+        // 2. Truyền đối tượng bệnh nhân vào hàm để nó tự thêm vào "sổ" của người đó
+        recordService.addNewRecord(patientBN06, "HS01", "Kham lan 1: Dau dau nhe", "Paracetamol");
+        recordService.addNewRecord(patientBN06, "HS02", "Kham lan 2: Sot cao", "Ibuprofen, Oresol");
+        recordService.addNewRecord(patientBN06, "HS03", "Kham lan 3: Viem hong nang", "Khang sinh Amoxicillin");
 
         System.out.println("\n[2] TEST CHUC NANG LAT HO SO VE QUÁ KHỨ (PREVIOUS)...");
-        System.out.println("* Hien tai dang xem ho so moi nhat (Lan 3).");
-        recordService.viewPrevious(); // Lùi về Lan 2
-        recordService.viewPrevious(); // Lùi về Lan 1
-        recordService.viewPrevious(); // Lùi quá đà -> Sẽ báo lỗi chạm đáy (hồ sơ cũ nhất)
+        // Bây giờ tất cả các hàm đều cần truyền patientBN06 vào
+        recordService.viewPrevious(patientBN06); // Lùi về Lan 2
+        recordService.viewPrevious(patientBN06); // Lùi về Lan 1
+        recordService.viewPrevious(patientBN06); // Lùi quá đà
 
         System.out.println("\n[3] TEST CHUC NANG LAT HO SO TOI HIỆN TẠI (NEXT)...");
-        recordService.viewNext(); // Tiến tới Lan 2
-        recordService.viewNext(); // Tiến tới Lan 3
-        recordService.viewNext(); // Tiến quá đà -> Sẽ báo lỗi chạm đỉnh (hồ sơ mới nhất)
+        recordService.viewNext(patientBN06); // Tiến tới Lan 2
+        recordService.viewNext(patientBN06); // Tiến tới Lan 3
+        recordService.viewNext(patientBN06); // Tiến quá đà
     }
 
     /**

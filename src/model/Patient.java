@@ -1,5 +1,7 @@
 package model;
 
+import collection.DoublyLinkedList;
+
 public class Patient {
     public String patientId;
     public String fullName;
@@ -10,6 +12,8 @@ public class Patient {
     public int ticketNumber;
     // Móc nối với sinh hiệu của bệnh nhân
     public Vitals currentVitals;
+    // ĐÂY LÀ CHÌA KHÓA: Mỗi bệnh nhân ôm 1 danh sách bệnh án riêng
+    public DoublyLinkedList medicalHistory;
 
     // Constructor cơ bản
     public Patient(String patientId, String fullName, int age, String gender,
@@ -22,6 +26,7 @@ public class Patient {
         this.healthInsuranceCode = healthInsuranceCode;
         this.ticketNumber = ticketNumber;
         this.currentVitals = currentVitals;
+        this.medicalHistory = new DoublyLinkedList(); // Khởi tạo danh sách bệnh án rỗng
     }
 
     // --- CÁC HÀM BỔ SUNG ĐỂ KẾT NỐI VỚI CẤU TRÚC DỮ LIỆU --- //
