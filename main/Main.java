@@ -1,5 +1,8 @@
 package main;
 
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+
 import model.Patient;
 import model.Vitals;
 import service.MedicalRecordService;
@@ -8,6 +11,7 @@ import service.PatientService;
 public class Main {
 
     public static void main(String[] args) {
+        // System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
         System.out.println("=== KHOI DONG HE THONG SMART HOSPITAL TRIAGE ===\n");
 
         // Goi ham test chuc nang Tiep nhan, Tra cuu (BST) va Phan luong cap cuu
@@ -18,6 +22,9 @@ public class Main {
 
         // Goi ham test chuc nang Duyet ho so benh an (Doubly Linked List)
         testMedicalHistoryNavigation();
+
+        testRecentViewsHistory();
+        testDoctorAssignment();
     }
 
     /**
@@ -143,5 +150,46 @@ public class Main {
         service.goBack(); // Dang o C -> Se quay ve B
         service.goBack(); // Dang o B -> Se quay ve A
         service.goBack(); // Dang o A -> Se bao loi vi day la trang dau tien
+    }
+
+    /**
+     * HAM TEST 3: Kiem tra Hang doi (FIFO Queue) phan cong Bac si
+     */
+    public static void testDoctorAssignment() {
+        System.out.println("--- TEST MODULE 4: PHAN CONG BAC SI (FIFO QUEUE) ---");
+        // Nho import service.DoctorService o dau file
+        service.DoctorService doctorService = new service.DoctorService();
+
+        System.out.println("\n[1] DIEM DANH BAC SI VAO CA TRUC:");
+        // Them 3 bac si vao hang doi (Theo thu tu: Tuan -> Mai -> Hung)
+        doctorService.addDoctorToShift("BS01", "Dr. Nguyen Tuan", "Cap Cuu Tong Hop");
+        doctorService.addDoctorToShift("BS02", "Dr. Le Mai", "Ngoai Khoa");
+        doctorService.addDoctorToShift("BS03", "Dr. Tran Hung", "Noi Khoa");
+
+        System.out.println("\n[2] MO PHONG TIEP NHAN BENH NHAN VA PHAN CONG:");
+        // Tao nhanh 4 benh nhan de test
+        model.Vitals v = new model.Vitals(80, 120, 98, 37);
+        model.Patient p1 = new model.Patient("BN01", "Benh nhan A", 30, "Nam", "0901", "BH01", 1, v);
+        model.Patient p2 = new model.Patient("BN02", "Benh nhan B", 25, "Nu", "0902", "BH02", 2, v);
+        model.Patient p3 = new model.Patient("BN03", "Benh nhan C", 50, "Nam", "0903", "BH03", 3, v);
+        model.Patient p4 = new model.Patient("BN04", "Benh nhan D", 40, "Nu", "0904", "BH04", 4, v);
+
+        // Phat benh nhan cho cac bac si (He thong se lay dung thu tu Tuan -> Mai ->
+        // Hung)
+        model.Doctor docForP1 = doctorService.assignDoctor(p1);
+        model.Doctor docForP2 = doctorService.assignDoctor(p2);
+        model.Doctor docForP3 = doctorService.assignDoctor(p3);
+
+        System.out.println("\n[3] THU PHAN CONG KHI HET BAC SI RANH:");
+        // Luc nay ca 3 bac si deu da duoc phan cong (hang doi rong)
+        model.Doctor docForP4 = doctorService.assignDoctor(p4);
+
+        System.out.println("\n[4] BAC SI HOAN THANH CA KHAM VA QUAY LAI HANG CHO:");
+        // Bac si Tuan kham xong cho benh nhan A, quay lai vao hang doi
+        doctorService.releaseDoctor(docForP1);
+
+        // Bay gio he thong phan cong lai benh nhan D dang cho
+        System.out.println("Goi lai benh nhan D vao kham:");
+        docForP4 = doctorService.assignDoctor(p4);
     }
 }
